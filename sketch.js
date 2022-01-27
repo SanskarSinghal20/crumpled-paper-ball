@@ -1,49 +1,87 @@
 const Engine = Matter.Engine;
-const World= Matter.World;
+const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Body = Matter.Body;
 
-var engine, world;
-var ground,ball;
-var binImg,bin;
+var ball,groundObj,leftSide,rightSide;
+var world;
+var radius = 70;
 
 function preload(){
-    binImg = loadImage("Images/dustbingreen.png");
-}
-function setup(){
-    var canvas = createCanvas(1200,600);
-    engine = Engine.create();
-    world = engine.world;
 
-    ground = new Ground();
-    crumpledPaper = new Paper();
+	dustbinImg = loadImage("dustbin.png");
+	paperImg = loadImage("paper.png");
 
-    bin = createSprite(964,520,20,20);
-    bin.addImage(binImg);
-    bin.scale = 0.45;
+	//dustbinImg = addImage("dustbin.png");
+	//paperImg = addImage("paper.png");
 
-    binPart1 = new Dustbin(902,505,10,120);
-    binPart2 = new Dustbin(962,565,130,10);
-    binPart3 = new Dustbin(1024,505,10,120);
+	//dustbin.loadImage("dustbin.png");
+	//paper.addImage("paper.png");
+	
+	//dustbin.loadImage("dustbin.png");
+	//paper.loadImage("paper.png");
 }
 
-function draw(){
-    background(0);
-    Engine.update(engine);
 
-    //text(mouseX+","+mouseY,200,200);
+function setup() {
+	createCanvas(windowWidth,windowHeight);
+	rectMode(CENTER);
 
+	engine = Engine.create();
+	world = engine.world;
+
+	var ball_options={
+		isStatic:false,
+		restitution:0.3,
+		density:0.4
+	}
+
+	ball = Bodies.circle(260,100,radius/2.6,ball_options);
+	World.add(world,ball);
+
+	ground=new Ground(width/2,670,width,100);
+	leftSide = new Ground(1100,520,10,120);
+	rightSide = new Ground(1270,520,10,120);
+	bottomSide = new Ground(1185,650,150,20);
+
+	Engine.run(engine);
+  
+}
+
+
+function draw() {
+	background(200);
+	rectMode(CENTER);
+
+
+	ground.display();
+	leftSide.display();  
+	rightSide.display();
+	bottomSide.display();
+
+	
+	imageMode(CENTER);
+
+	//image(paperImg,ball.position.y,ball.position.x,radius,radius);
+	//image(paperImg,ball.position.x,ball.position.y,radius/2,radius/2);
+	//ellipse(ball.position.x,ball.position.y,radius,radius);
+	image(paperImg,ball.position.x,ball.position.y,radius,radius);
+
+
+	
+	//image(1185, 570, 200,200);
+	//rect(1185, 570, 200,200);
+	image(dustbinImg, 1185, 520, 200,200);
+	//ellipse(1185, 570, 200,200)
+
+
+
+}
+
+function keyPressed() {
+  	if (keyCode === UP_ARROW) {
+
+		Matter.Body.applyForce(ball,ball.position,{x:85,y:-85});
     
-    ground.display();
-    crumpledPaper.display();
-    binPart1.display();
-    binPart2.display();
-    binPart3.display(); 
-      
-    drawSprites();
-}
-
-function keyPressed(){
-    if(keyCode === UP_ARROW){
-        Matter.Body.applyForce(crumpledPaper.body,crumpledPaper.body.position,{x:74,y:-75});
-    }
+  	}
 }
